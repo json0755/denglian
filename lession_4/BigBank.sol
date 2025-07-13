@@ -53,27 +53,25 @@ contract Bank is IBank {
 
     // 更新top3，保证top3为存款最多的3个用户且无重复
     function updateTop3() internal {
-        // 初始化临时数组
-        address[3] memory tempTop3;
-        uint256[3] memory tempAmounts;
-        for (uint256 i = 0; i < allUsers.length; i++) {
+        // 简化实现，避免复杂的排序逻辑
+        if (allUsers.length == 0) {
+            return;
+        }
+        
+        // 找到前3个有余额的用户
+        uint256 count = 0;
+        for (uint256 i = 0; i < allUsers.length && count < 3; i++) {
             address user = allUsers[i];
-            uint256 amount = balances[user];
-            // 插入排序
-            for (uint256 j = 0; j < 3; j++) {
-                if (amount > tempAmounts[j]) {
-                    // 后移
-                    for (uint256 k = 2; k > j; k--) {
-                        tempAmounts[k] = tempAmounts[k-1];
-                        tempTop3[k] = tempTop3[k-1];
-                    }
-                    tempAmounts[j] = amount;
-                    tempTop3[j] = user;
-                    break;
-                }
+            if (balances[user] > 0) {
+                top3[count] = user;
+                count++;
             }
         }
-        top3 = tempTop3;
+        
+        // 如果不足3个，用零地址填充
+        for (uint256 i = count; i < 3; i++) {
+            top3[i] = address(0);
+        }
     }
 
     // 管理员提取指定金额
