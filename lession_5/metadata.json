@@ -1,0 +1,10 @@
+{
+  "name": "Bape0755",
+  "description": "night photo",
+  "image": "ipfs://bafybeieiiqlmbi365ga42kevbebguz2hmxjg4o3gfzq3go6q4xqzshigwu",
+  "attributes": [
+    { "trait_type": "city", "value": "shenzhen" },
+    { "trait_type": "time", "value": "night" },
+    { "trait_type": "type", "value": "photo" }
+  ]
+}

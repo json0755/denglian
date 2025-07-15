@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: MIT // 许可证声明
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0; // 指定Solidity编译器版本
 
 // 定义 BaseERC20 的接口，便于与 TokenBank 交互

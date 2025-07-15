@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT // 许可证声明
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0; // 指定Solidity编译器版本
 
 // 定义接收 Token 回调的接口
