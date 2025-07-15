@@ -1,67 +1,48 @@
 // SPDX-License-Identifier: MIT
-
-
 pragma solidity ^0.8.0;
 
-
+// 声明合约 BaseERC20，继承自 ERC20 标准接口
 contract BaseERC20 {
-    string public name; 
-    string public symbol; 
-    uint8 public decimals; 
+    // 代币名称
+    string public name = "BaseERC20 Token";
+    // 代币符号
+    string public symbol = "BET";
+    // 代币小数位数
+    uint8 public decimals = 18;
+    // 代币总供应量
+    uint256 public totalSupply;
+    // 记录每个地址的余额
+    mapping(address => uint256) public balanceOf;
+    // 记录授权信息：owner => (spender => amount)
+    mapping(address => mapping(address => uint256)) public allowance;
 
-    uint256 public totalSupply; 
-
-    mapping (address => uint256) balances; 
-
-    mapping (address => mapping (address => uint256)) allowances; 
-
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-
-    constructor() {
-        // write your code here
-        // set name,symbol,decimals,totalSupply
-        name = "BaseERC20";
-        symbol = "BERC20";
-        decimals = 18;
-        totalSupply = 100000000;
-        balances[msg.sender] = totalSupply;  
+    // 构造函数，初始化总供应量并分配给部署者
+    constructor(uint256 _initialSupply) {
+        totalSupply = _initialSupply;
+        balanceOf[msg.sender] = _initialSupply;
     }
 
-    function balanceOf(address _owner) public view returns (uint256 balance) {
-        // write your code here
-        return balances[_owner];
-    }
-
+    // 转账函数，向指定地址转账指定数量的代币
     function transfer(address _to, uint256 _value) public returns (bool success) {
-        require(balances[msg.sender] >= _value, "ERC20: transfer amount exceeds balance");
-        balances[msg.sender] -= _value;
-        balances[_to] += _value;
-        emit Transfer(msg.sender, _to, _value);  
-        return true;   
+        require(balanceOf[msg.sender] >= _value, unicode"余额不足");
+        balanceOf[msg.sender] -= _value;
+        balanceOf[_to] += _value;
+        return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-        // write your code here
-        require(balances[_from] >= _value,"ERC20: transfer amount exceeds balance");
-        require(allowances[_from][msg.sender] >= _value,"ERC20: transfer amount exceeds allowance");
-        balances[_from] -= _value;
-        balances[_to] += _value;
-        allowances[_from][msg.sender] -= _value;
-        emit Transfer(_from, _to, _value); 
-        return true; 
-    }
-
+    // 授权函数，允许spender从msg.sender账户转走指定数量的代币
     function approve(address _spender, uint256 _value) public returns (bool success) {
-        // write your code here
-        allowances[msg.sender][_spender] = _value;
-
-        emit Approval(msg.sender, _spender, _value); 
-        return true; 
+        allowance[msg.sender][_spender] = _value;
+        return true;
     }
 
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {   
-        // write your code here     
-        return allowances[_owner][_spender];
+    // 代理转账函数，spender可以从from账户转账到to账户
+    function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
+        require(balanceOf[_from] >= _value, unicode"余额不足");
+        require(allowance[_from][msg.sender] >= _value, unicode"授权额度不足");
+        balanceOf[_from] -= _value;
+        balanceOf[_to] += _value;
+        allowance[_from][msg.sender] -= _value;
+        return true;
     }
 }
