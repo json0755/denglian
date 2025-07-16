@@ -73,6 +73,7 @@ contract Bank is IBank {
             top3[i] = address(0);
         }
     }
+    
 
     // 管理员提取指定金额
     function withdraw(uint256 amount) public virtual {
